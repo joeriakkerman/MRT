@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2009
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MRT", "MRT.csproj", "{A5DEEFCA-EFB3-4104-906F-EA2619E5C801}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A5DEEFCA-EFB3-4104-906F-EA2619E5C801}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5DEEFCA-EFB3-4104-906F-EA2619E5C801}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5DEEFCA-EFB3-4104-906F-EA2619E5C801}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5DEEFCA-EFB3-4104-906F-EA2619E5C801}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {11897A1F-D060-49D6-8642-C243DD321E72}
+	EndGlobalSection
+EndGlobal
