@@ -45,6 +45,7 @@ namespace MRT
             parser.getEmployees().Add(emp);
             parser.serialize();
             Close();
+            form.setAddedEmployee(emp.name);
         }
     }
 }

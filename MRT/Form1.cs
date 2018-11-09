@@ -17,6 +17,7 @@ namespace MRT
         private Parser parser;
         private int week, currentWeek;
         public String mrtVersion = "1.0";
+        private String addedName = "";
 
         public Form1()
         {
@@ -94,6 +95,11 @@ namespace MRT
                 else Enabled = true;
             }else new Form4(this).ShowDialog();
             return true;
+        }
+
+        public void setAddedEmployee(String name)
+        {
+            addedName = name;
         }
 
         private void loadCurrentWeek()
@@ -304,6 +310,8 @@ namespace MRT
         private void Form1_Activated(object sender, EventArgs e)
         {
             string name = employeesList.Text.ToString();
+            if (!addedName.Equals("")) name = addedName;
+            addedName = "";
             setEmployeesList();
             if (employeesList.Items.Contains(name)) employeesList.Text = name;
         }
@@ -349,17 +357,21 @@ namespace MRT
 
         private void delete_Click(object sender, EventArgs e)
         {
-            parser.removeEmployee(employeesList.Text.ToString());
-            Form1_Activated(sender, e);
-            intimeCircle.Value = 0;
-            qualityCircle.Value = 0;
-            intimeCircle.Text = "0";
-            qualityCircle.Text = "0";
-            dateFrom.Enabled = false;
-            dateTo.Enabled = false;
-            delete.Enabled = false;
-            addResult.Enabled = false;
-            clearChart();
+            DialogResult dialogResult = MessageBox.Show("Weet je zeker dat je deze medewerker wilt verwijderen?", "Medewerker verwijderen", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                parser.removeEmployee(employeesList.Text.ToString());
+                Form1_Activated(sender, e);
+                intimeCircle.Value = 0;
+                qualityCircle.Value = 0;
+                intimeCircle.Text = "0";
+                qualityCircle.Text = "0";
+                dateFrom.Enabled = false;
+                dateTo.Enabled = false;
+                delete.Enabled = false;
+                addResult.Enabled = false;
+                clearChart();
+            }
         }
 
         private void right_Click(object sender, EventArgs e)
