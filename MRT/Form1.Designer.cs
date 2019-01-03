@@ -47,6 +47,7 @@
             this.dateFrom = new System.Windows.Forms.DateTimePicker();
             this.dateTo = new System.Windows.Forms.DateTimePicker();
             this.delete = new System.Windows.Forms.Button();
+            this.lblYear = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -60,7 +61,7 @@
             this.employeesList.Name = "employeesList";
             this.employeesList.Size = new System.Drawing.Size(209, 21);
             this.employeesList.TabIndex = 0;
-            this.employeesList.TextChanged += new System.EventHandler(this.name_TextChanged);
+            this.employeesList.SelectionChangeCommitted += new System.EventHandler(this.employeesList_SelectionChangeCommitted);
             // 
             // add
             // 
@@ -252,11 +253,21 @@
             this.delete.UseVisualStyleBackColor = true;
             this.delete.Click += new System.EventHandler(this.delete_Click);
             // 
+            // lblYear
+            // 
+            this.lblYear.AutoSize = true;
+            this.lblYear.Location = new System.Drawing.Point(94, 604);
+            this.lblYear.Name = "lblYear";
+            this.lblYear.Size = new System.Drawing.Size(31, 13);
+            this.lblYear.TabIndex = 17;
+            this.lblYear.Text = "2019";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(797, 642);
+            this.Controls.Add(this.lblYear);
             this.Controls.Add(this.delete);
             this.Controls.Add(this.dateTo);
             this.Controls.Add(this.dateFrom);
@@ -300,6 +311,7 @@
         private System.Windows.Forms.DateTimePicker dateFrom;
         private System.Windows.Forms.DateTimePicker dateTo;
         private System.Windows.Forms.Button delete;
+        private System.Windows.Forms.Label lblYear;
     }
 }
 

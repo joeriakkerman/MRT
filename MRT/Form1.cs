@@ -18,6 +18,7 @@ namespace MRT
         private int week, currentWeek;
         public String mrtVersion = "1.0";
         private String addedName = "";
+        private int year, currentYear;
 
         public Form1()
         {
@@ -105,6 +106,8 @@ namespace MRT
         private void loadCurrentWeek()
         {
             DateTime time = DateTime.Now;
+            changeYear(time.Date.Year);
+            currentYear = time.Date.Year;
             DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
             if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
             {
@@ -116,7 +119,7 @@ namespace MRT
 
         private DateTime firstDateOfWeek(int weekOfYear)
         {
-            DateTime jan1 = new DateTime(DateTime.Now.Year, 1, 1);
+            DateTime jan1 = new DateTime(year, 1, 1);
             int daysOffset = DayOfWeek.Thursday - jan1.DayOfWeek;
             DateTime firstThursday = jan1.AddDays(daysOffset);
             var cal = CultureInfo.CurrentCulture.Calendar;
@@ -159,6 +162,12 @@ namespace MRT
             chart1.ChartAreas[0].AxisY.Maximum = 100;
         }
 
+        private void changeYear(int year)
+        {
+            this.year = year;
+            lblYear.Text = "" + year;
+        }
+
         private void setEmployeesList()
         {
             employeesList.Items.Clear();
@@ -172,32 +181,12 @@ namespace MRT
 
         private Boolean isInside(string d)
         {
-            if (dateFrom.Enabled && dateTo.Enabled)
-            {
-                DateTime dt = dateFrom.Value;
-                string frm = dt.Day + "/" + dt.Month + "/" + dt.Year;
-                DateTime dt2 = dateTo.Value;
-                string tto = dt2.Day + "/" + dt2.Month + "/" + dt2.Year;
-                string[] from = frm.Split('/');
-                string[] date = d.Split('/');
-                string[] to = tto.Split('/');
-                if (from.Length != 3 || date.Length != 3 || to.Length != 3) MessageBox.Show(dateFrom.Value.Date.ToString("dd/MM/yyyy") + ", " + d + ", " + dateTo.Value.Date.ToString("dd/MM/yyyy"));
-
-                if ((int.Parse(date[2]) >= int.Parse(from[2])) && (int.Parse(date[1]) >= int.Parse(from[1])))
-                {
-                    if ((int.Parse(date[0]) >= int.Parse(from[0])) || (int.Parse(date[1]) > int.Parse(from[1])))
-                    {
-                        if ((int.Parse(date[2]) <= int.Parse(to[2])) && (int.Parse(date[1]) <= int.Parse(to[1])))
-                        {
-                            if ((int.Parse(date[0]) <= int.Parse(to[0])) || (int.Parse(date[1]) < int.Parse(to[1])))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
+            string[] date = d.Split('/');
+            DateTime dt = new DateTime(int.Parse(date[2]), int.Parse(date[1]), int.Parse(date[0]));
+            DateTime from = dateFrom.Value;
+            DateTime to = dateTo.Value;
+            if (dt >= from && dt <= to) return true;
+            else return false;
         }
 
         private void loadAverages()
@@ -207,6 +196,11 @@ namespace MRT
             int count = 0;
             Parser.Employee emp = parser.getEmployeeByName(employeesList.Text.ToString());
             if (emp == null) return;
+
+            for(int i = 0; i < emp.results.Count; i++)
+            {
+                Console.WriteLine(emp.name + ": " + i + " " + emp.results[i].date + " " + emp.results[i].intime + " " + emp.results[i].quality);
+            }
 
             if (emp.results.Count > 0)
             {
@@ -285,22 +279,6 @@ namespace MRT
             dateTo.Value = DateTime.Today;
         }
 
-        private void name_TextChanged(object sender, EventArgs e)
-        {
-            intimeCircle.Value = 0;
-            qualityCircle.Value = 0;
-            intimeCircle.Text = "0";
-            qualityCircle.Text = "0";
-            clearChart();
-            
-            setDatePickers();
-            loadCurrentWeek();
-            setupChart();
-            loadAverages();
-            addResult.Enabled = true;
-            delete.Enabled = true;
-        }
-
         private void add_Click(object sender, EventArgs e)
         {
             Form2 f = new Form2(this);
@@ -325,7 +303,11 @@ namespace MRT
         private void left_Click(object sender, EventArgs e)
         {
             week--;
-            if (week < 0) week = 0;
+            if (week < 1)
+            {
+                changeYear(year-1);
+                week = 52;
+            }
             weekNumber.Text = "Week " + week;
             setupChart();
         }
@@ -350,8 +332,8 @@ namespace MRT
             for (int i = 0; i < daysInWeek.Length; i++)
             {
                 DateTime dtt = dt.AddDays(i);
-                chart1.Series["Op tijd klaar"].Points.AddXY(daysInWeek[i] + dtt.ToString("dd/MM"), 0);
-                chart1.Series["Kwaliteit"].Points.AddXY(daysInWeek[i] + dtt.ToString("dd/MM"), 0);
+                chart1.Series["Op tijd klaar"].Points.AddXY(daysInWeek[i] + " " + dtt.ToString("dd/MM"), 0);
+                chart1.Series["Kwaliteit"].Points.AddXY(daysInWeek[i] + " " + dtt.ToString("dd/MM"), 0);
             }
         }
 
@@ -374,10 +356,31 @@ namespace MRT
             }
         }
 
+        private void employeesList_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            intimeCircle.Value = 0;
+            qualityCircle.Value = 0;
+            intimeCircle.Text = "0";
+            qualityCircle.Text = "0";
+            clearChart();
+
+            setDatePickers();
+            loadCurrentWeek();
+            setupChart();
+            loadAverages();
+            addResult.Enabled = true;
+            delete.Enabled = true;
+        }
+
         private void right_Click(object sender, EventArgs e)
         {
             week++;
-            if (week > currentWeek) week = currentWeek;
+            if (week > currentWeek && year == currentYear) week = currentWeek;
+            else if(week > 52 && year < currentYear)
+            {
+                week = 1;
+                changeYear(year+1);
+            }
             weekNumber.Text = "Week " + week;
             setupChart();
         }
