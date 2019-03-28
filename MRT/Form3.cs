@@ -54,25 +54,15 @@ namespace MRT
             else if (q.Equals(qualityCombo.Items[2])) quality = 2;
             string date = day.Text.ToString().Split(' ')[1];
             Console.WriteLine("date " + date);
-            Parser.Employee emp = parser.getEmployeeByName(name);
-            if(emp != null)
+            
+            if(parser.containsResult(name, date))
             {
-                for (int i = 0; i < emp.results.Count; i++)
-                {
-                    if (emp.results[i].date.Equals(date))
-                    {
-                        MessageBox.Show("Er is al een resultaat ingevuld op deze datum voor deze persoon!");
-                        return;
-                    }
-                }
-                Parser.Result result = new Parser.Result();
-                result.date = date;
-                result.intime = intimeCheckbox.Checked;
-                result.quality = quality;
-                emp.results.Add(result);
-                parser.serialize();
+                MessageBox.Show("Er is al een resultaat ingevuld op deze datum voor deze persoon!");
+            }else
+            {
+                parser.addResult(name, date, intimeCheckbox.Checked, quality);
+                Close();
             }
-            Close();
         }
     }
 }

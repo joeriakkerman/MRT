@@ -29,73 +29,11 @@ namespace MRT
 
         private void init()
         {
-            /*Boolean b = checkVersion();
-            if (b)
-            {
-                Boolean b2 = checkLicense();
-                if (b2)
-                {
-                    setEmployeesList();
-                    loadCurrentWeek();
-                    intimeCircle.Value = 0;
-                    qualityCircle.Value = 0;
-                    clearChart();
-                    if (!parser.makeBackup()) showMessageBox("Er ging iets mis bij het maken van een back-up");
-                }
-            }*/
-            //parser = new Parser(this);
             setEmployeesList();
             loadCurrentWeek();
             intimeCircle.Value = 0;
             qualityCircle.Value = 0;
             clearChart();
-        }
-
-        private Boolean checkVersion()
-        {
-            Parser.CheckVersionResult result = parser.checkVersion();
-            if(result == null)
-            {
-                System.Windows.Forms.Application.Exit();
-                return false;
-            }
-            if(result.result == 1)
-            {
-                if (result.allowed == 0)
-                {
-                    showMessageBox("Deze versie wordt niet meer ondersteund!");
-                    System.Windows.Forms.Application.Exit();
-                    return false;
-                }
-            }
-            else
-            {
-                showMessageBox("Er ging iets mis bij het controleren van de versie, probeer het alstublieft opnieuw...");
-                System.Windows.Forms.Application.Exit();
-                return false;
-            }
-            return true;
-        }
-
-        private Boolean checkLicense()
-        {
-            String s = parser.getLicense();
-            if (s != null && !s.Equals(""))
-            {
-                Parser.CheckActivationResult result = parser.checkActivation(s);
-                if(result == null)
-                {
-                    MessageBox.Show("Je moet het programma nog activeren met een licentiecode, echter moet je hiervoor wel een internet verbinding hebben");
-                    System.Windows.Forms.Application.Exit();
-                    return false;
-                }
-                if (!(result.result == 1 && result.sameIP == 1 && result.activated == 1))
-                {
-                    new Form4(this).ShowDialog();
-                }
-                else Enabled = true;
-            }else new Form4(this).ShowDialog();
-            return true;
         }
 
         public void setAddedEmployee(String name)
@@ -138,21 +76,21 @@ namespace MRT
         {
             clearChart();
             string[] daysInWeek = new string[] { "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag" };
-            Parser.Employee emp = parser.getEmployeeByName(employeesList.Text.ToString());
-            if (emp == null) return;
+            List<Parser.Result> results = parser.getResults(employeesList.Text.ToString());
+            if (results == null) return;
             DateTime dtt = firstDateOfWeek(week);
             for (int i = 0; i < 7; i++)
             {
                 DateTime dt = dtt.AddDays(i);
                 string s = dt.Date.Day + "/" + dt.Date.Month + "/" + dt.Date.Year;
-                for (int j = 0; j < emp.results.Count; j++)
+                for (int j = 0; j < results.Count; j++)
                 {
-                    if (emp.results[j].date.Equals(s))
+                    if (results[j].date.Equals(s))
                     {
                         
-                        if (emp.results[j].intime) chart1.Series["Op tijd klaar"].Points[i].SetValueY(100);
+                        if (results[j].intime) chart1.Series["Op tijd klaar"].Points[i].SetValueY(100);
                         else chart1.Series["Op tijd klaar"].Points[i].SetValueY(1);
-                        int ii = emp.results[j].quality * 50;
+                        int ii = results[j].quality * 50;
                         if (ii <= 0) ii = 1;
                         chart1.Series["Kwaliteit"].Points[i].SetValueY(ii);
                         continue;
@@ -171,12 +109,8 @@ namespace MRT
         private void setEmployeesList()
         {
             employeesList.Items.Clear();
-            List<Parser.Employee> employees = parser.getEmployees();
-            List<string> names = new List<string>();
-            for(int i = 0; i < employees.Count; i++)
-                names.Add(employees[i].name);
-            names.Sort();
-            employeesList.Items.AddRange(names.ToArray());
+            List<String> employees = parser.getEmployees();
+            employeesList.Items.AddRange(employees.ToArray());
         }
 
         private Boolean isInside(string d)
@@ -194,22 +128,16 @@ namespace MRT
             float intime = 0;
             float quality = 0;
             int count = 0;
-            Parser.Employee emp = parser.getEmployeeByName(employeesList.Text.ToString());
-            if (emp == null) return;
+            List<Parser.Result> results = parser.getResults(employeesList.Text.ToString());
 
-            for(int i = 0; i < emp.results.Count; i++)
+            if (results.Count > 0)
             {
-                Console.WriteLine(emp.name + ": " + i + " " + emp.results[i].date + " " + emp.results[i].intime + " " + emp.results[i].quality);
-            }
-
-            if (emp.results.Count > 0)
-            {
-                for (int i = 0; i < emp.results.Count; i++)
+                for (int i = 0; i < results.Count; i++)
                 {
-                    if (isInside(emp.results[i].date))
+                    if (isInside(results[i].date))
                     {
-                        if (emp.results[i].intime) intime++;
-                        quality += emp.results[i].quality;
+                        if (results[i].intime) intime++;
+                        quality += results[i].quality;
                         count++;
                     }
                 }
@@ -243,8 +171,8 @@ namespace MRT
 
         private void setDatePickers()
         {
-            Parser.Employee emp = parser.getEmployeeByName(employeesList.Text.ToString());
-            if (emp == null || emp.results == null || emp.results.Count <= 0)
+            List<Parser.Result> results = parser.getResults(employeesList.Text.ToString());
+            if (results == null || results.Count <= 0)
             {
                 dateFrom.Enabled = false;
                 dateTo.Enabled = false;
@@ -253,10 +181,10 @@ namespace MRT
             dateFrom.Enabled = true;
             dateTo.Enabled = true;
             int id = 0;
-            for(int i = 0; i < emp.results.Count; i++)
+            for(int i = 0; i < results.Count; i++)
             {
-                string[] date = emp.results[i].date.Split('/');
-                string[] fdate = emp.results[id].date.Split('/');
+                string[] date = results[i].date.Split('/');
+                string[] fdate = results[id].date.Split('/');
                 if (int.Parse(fdate[2]) < int.Parse(date[2])) continue;
                 else if (int.Parse(fdate[2]) > int.Parse(date[2])) id = i;
                 else if (int.Parse(fdate[1]) < int.Parse(date[1])) continue;
@@ -264,8 +192,8 @@ namespace MRT
                 else if (int.Parse(fdate[0]) < int.Parse(date[0])) continue;
                 else if (int.Parse(fdate[0]) > int.Parse(date[0])) id = i;
             }
-            Console.WriteLine("emp.results[id].date " + emp.results[id].date);
-            string[] parts = emp.results[id].date.Split('/');
+            Console.WriteLine("emp.results[id].date " + results[id].date);
+            string[] parts = results[id].date.Split('/');
             DateTime firstDay = new DateTime(int.Parse(parts[2]), int.Parse(parts[1]), int.Parse(parts[0]));
             dateFrom.CustomFormat = "dd/MM/yyyy";
             dateFrom.Format = DateTimePickerFormat.Custom;

@@ -26,11 +26,10 @@ namespace MRT
             for (int i = 0; i < content.Length; i++)
             {
                 Parser parser = new Parser(form);
-                Parser.Employee emp = new Parser.Employee();
-                emp.name = content[i];
-                emp.results = new List<Parser.Result>();
-                parser.getEmployees().Add(emp);
-                parser.serialize();
+                if (!parser.addEmployee(content[i]))
+                {
+                    MessageBox.Show("Er ging iets mis bij het toevoegen van een medewerker...");
+                }
             }
             Close();
         }
@@ -41,13 +40,14 @@ namespace MRT
             Parser parser = new Parser(form);
             if (parser.getEmployees().Count < 1)
             {
-                Parser.Employee emp = new Parser.Employee();
-                emp.name = name.Text.ToString();
-                emp.results = new List<Parser.Result>();
-                parser.getEmployees().Add(emp);
-                parser.serialize();
+                if (!parser.addEmployee(name.Text.ToString()))
+                {
+                    MessageBox.Show("Er ging iets mis bij het toevoegen van een medewerker...");
+                }else
+                {
+                    form.setAddedEmployee(name.Text.ToString());
+                }
                 Close();
-                form.setAddedEmployee(emp.name);
             }
             else MessageBox.Show("Je kunt maximaal 1 medewerker toevoegen in de DEMO versie");
         }

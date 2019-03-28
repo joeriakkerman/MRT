@@ -4,9 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using Newtonsoft.Json;
-using System.Net;
-using System.Net.Http;
 using System.Collections.Specialized;
 using System.Data.SqlClient;
 using System.Data;
@@ -15,297 +12,172 @@ namespace MRT
 {
     class Parser
     {
-        private string URL = "https://jumbobackup.000webhostapp.com/";
         private Form1 form;
-        private List<Employee> employees = new List<Employee>();
-        private String license = "";
-        private static HttpClient client;
+
+        private String path;
+        private String connectionString;
 
         public Parser(Form1 form)
         {
             this.form = form;
-            //client = new HttpClient();
-            deserialize();
+            path = "\"D:\\Joeri\\workspace\\visual studio\\MRT\\MRT\\MRT\\Employees.mdf\"";
+            connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + path + ";Integrated Security=True";//|DataDirectory|\\Employees.mdf
         }
 
-        private void addEmployee()
+        public bool addEmployee(String name)
         {
-
-        }
-
-        private void removeEmployee()
-        {
-
-        }
-
-        private void addResult(int empID)
-        {
-
-        }
-
-        private int getIdFromName(String name)
-        {
-            return 0;
-        }
-
-        private void updateFromJsonToDB()
-        {
-            String path = "\"D:\\Joeri\\workspace\\visual studio\\MRT\\MRT\\MRT\\Employees.mdf\"";
-            String connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + path + ";Integrated Security=True";//|DataDirectory|\\Employees.mdf
-
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    SqlCommand command = new SqlCommand("INSERT INTO results (emp_id, date, intime, quality) VALUES((SELECT id FROM employees WHERE name=@name), @date, @intime, @quality)", connection);
-                    command.CommandType = System.Data.CommandType.Text;
-
                     connection.Open();
-                    Console.WriteLine("Connection opened: " + employees.Count);
-
-                    foreach (Employee e in employees)
-                    {
-                        foreach(Result r in e.results)
-                        {
-                            command.Parameters.Clear();
-                            command.Parameters.AddWithValue("@name", e.name);
-                            command.Parameters.AddWithValue("@date", r.date);
-                            command.Parameters.AddWithValue("@intime", r.intime);
-                            command.Parameters.AddWithValue("@quality", r.quality);
-                            int result = command.ExecuteNonQuery();
-                            Console.WriteLine("Amount of rows affected: " + result + ", tried to add result for: " + e.name + ", date: " + r.date);
-                        }
-                    }
-
-                    command = new SqlCommand("SELECT * FROM employees", connection);
-
-                    using (SqlDataReader oReader = command.ExecuteReader())
-                    {
-                        while (oReader.Read())
-                        {
-                            Console.WriteLine("id: " + oReader["id"].ToString() + ", name: " + oReader["name"].ToString());
-                        }
-                    }
-
+                    SqlCommand command = new SqlCommand("INSERT INTO employees (name) VALUES (@name)", connection);
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.Parameters.AddWithValue("@name", name);
+                    int result = command.ExecuteNonQuery();
                     connection.Close();
-                    Console.WriteLine("Connection closed");
+                    if (result > 0) return true;
+                    else return false;
                 }
             }
             catch (SqlException e)
             {
+                form.showMessageBox("Er ging iets mis bij het verbinden met de database...");
                 Console.WriteLine(e.StackTrace + ", " + e.Message);
+                return false;
             }
+            
         }
 
-        public Boolean makeBackup()
+        public bool removeEmployee(String name)
         {
             try
             {
-                string homePath = AppDomain.CurrentDomain.BaseDirectory;
-                string path = homePath + "results.json";
-                if (File.Exists(path))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string text = System.IO.File.ReadAllText(path);
-                    var data = new FormUrlEncodedContent(new[]
-                    {
-                        new KeyValuePair<string, string>("license", license),
-                        new KeyValuePair<string, string>("json", text),
-                        new KeyValuePair<string, string>("date", DateTime.Today.ToString("dd/MM/yyyy"))
-                    });
-                    var response = client.PostAsync(URL + "makebackup.php", data).Result;
-                    string content = response.Content.ReadAsStringAsync().Result;
-                    Response result = JsonConvert.DeserializeObject<Response>(content);
-                    if (result.result == 2 || result.result == 3) return true;
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("DELETE FROM employees WHERE name = @name", connection);
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.Parameters.AddWithValue("@name", name);
+                    int result = command.ExecuteNonQuery();
+                    connection.Close();
+                    if (result > 0) return true;
                     else return false;
                 }
-                else return true;
             }
-            catch (HttpRequestException)
+            catch (SqlException e)
             {
-                form.showMessageBox("Kon geen backup maken door het ontbreken van een internet verbinding");
+                form.showMessageBox("Er ging iets mis bij het verbinden met de database...");
+                Console.WriteLine(e.StackTrace + ", " + e.Message);
                 return false;
             }
         }
 
-        public Boolean addLicense(String license)
+        public bool addResult(String name, String date, bool intime, int quality)
         {
             try
             {
-                var data = new FormUrlEncodedContent(new[]
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    new KeyValuePair<string, string>("license", license),
-                    new KeyValuePair<string, string>("version", form.mrtVersion)
-                });
-                var response = client.PostAsync(URL + "addlicense.php", data).Result;
-                string content = response.Content.ReadAsStringAsync().Result;
-                Response result = JsonConvert.DeserializeObject<Response>(content);
-                if (result.result == 1) return true;
-                else if(result.result == 2)
-                {
-                    form.showMessageBox("Deze licentiecode is niet bruikbaar");
-                    return false;
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("INSERT INTO results (name, date, intime, quality) VALUES (@name, @date, @intime, @quality)", connection);
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.Parameters.AddWithValue("@name", name);
+                    command.Parameters.AddWithValue("@date", date);
+                    command.Parameters.AddWithValue("@intime", intime ? 1 : 0);
+                    command.Parameters.AddWithValue("@quality", quality);
+                    int result = command.ExecuteNonQuery();
+                    connection.Close();
+                    if (result > 0) return true;
+                    else return false;
                 }
             }
-            catch (HttpRequestException)
+            catch (SqlException e)
             {
-                form.showMessageBox("Kon licentie niet activeren door het ontbreken van een internet verbinding");
+                form.showMessageBox("Er ging iets mis bij het verbinden met de database...");
+                Console.WriteLine(e.StackTrace + ", " + e.Message);
                 return false;
             }
-            form.showMessageBox("Er ging iets mis bij het activeren van de licentie");
-            return false;
         }
 
-        public CheckActivationResult checkActivation(String license)
+        public List<Result> getResults(String name)
         {
+            List<Result> results = new List<Result>();
             try
             {
-                var data = new FormUrlEncodedContent(new[]
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    new KeyValuePair<string, string>("license", license)
-                });
-                var response = client.PostAsync(URL + "checkactivation.php", data).Result;
-                string content = response.Content.ReadAsStringAsync().Result;
-                CheckActivationResult result = JsonConvert.DeserializeObject<CheckActivationResult>(content);
-                return result;
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("SELECT date, intime, quality FROM results WHERE name = @name", connection);
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.Parameters.AddWithValue("@name", name);
+                    using (SqlDataReader oReader = command.ExecuteReader())
+                    {
+                        while (oReader.Read())
+                        {
+                            try
+                            {
+                                int intime = Int32.Parse(oReader["intime"].ToString());
+                                int quality = Int32.Parse(oReader["quality"].ToString());
+                                bool b = intime == 1 ? true : false;
+                                results.Add(new Result(oReader["date"].ToString(), b, quality));
+                            }
+                            catch (FormatException e)
+                            {
+                                form.showMessageBox("Er ging iets mis bij het ophalen van de resultaten...");
+                                Console.WriteLine("Format exception (Parser->getResults()) : " + e.Message + ", " + e.StackTrace);
+                            }
+
+                        }
+                    }
+                    connection.Close();
+                }
             }
-            catch (HttpRequestException)
+            catch (SqlException e)
             {
-                return null;
+                form.showMessageBox("Er ging iets mis bij het verbinden met de database...");
+                Console.WriteLine(e.StackTrace + ", " + e.Message);
             }
+            return results;
         }
 
-        public CheckVersionResult checkVersion()
+        public bool containsResult(String name, String date)
         {
-            try
+            List<Result> results = getResults(name);
+            for(int i = 0; i < results.Count; i++)
             {
-                var data = new FormUrlEncodedContent(new[]
-                {
-                    new KeyValuePair<string, string>("version", form.mrtVersion)
-                });
-                var response = client.PostAsync(URL + "checkversion.php", data).Result;
-                string content = response.Content.ReadAsStringAsync().Result;
-                CheckVersionResult result = JsonConvert.DeserializeObject<CheckVersionResult>(content);
-                return result;
-            }
-            catch (HttpRequestException)
-            {
-                form.showMessageBox("Je hebt een internetverbinding nodig om dit programma te kunnen gebruiken");
-                return null;
-            }
-        }
-
-        private String encrypt(String input)
-        {
-            String output = "";
-            char[] arr = input.ToCharArray();
-            char[] key = "ENCODEKEY".ToCharArray();
-            for (int i = 0; i < arr.Length; i++)
-                output += (char)(arr[i] + key[i % key.Length]);
-            return output;
-        }
-
-        private String decrypt(String input)
-        {
-            String output = "";
-            char[] arr = input.ToCharArray();
-            char[] key = "ENCODEKEY".ToCharArray();
-            for (int i = 0; i < arr.Length; i++)
-                output += (char)(arr[i] - key[i % key.Length]);
-            return output;
-        }
-
-        public void setLicense(String license)
-        {
-            deserialize();
-            this.license = license;
-            serialize();
-        }
-
-        public String getLicense()
-        {
-            deserialize();
-            return license;
-        }
-
-        private bool deserialize()
-        {
-            string homePath = AppDomain.CurrentDomain.BaseDirectory;
-            string path = homePath + "results.json";
-            if (File.Exists(path))
-            {
-                string text = System.IO.File.ReadAllText(path);
-                text = decrypt(text);
-                List list = JsonConvert.DeserializeObject<List>(text);
-                employees = list.employees;
-                license = list.license;
-                return true;
+                if (results[i].date.Equals(date)) return true;
             }
             return false;
         }
 
-        public void serialize()
+        public List<String> getEmployees()
         {
-            string homePath = AppDomain.CurrentDomain.BaseDirectory;
-            string path = homePath + "results.json";
-            List list = new List();
-            list.employees = employees;
-            list.license = license;
-            string json = JsonConvert.SerializeObject(list);
-            json = encrypt(json);
-            System.IO.File.WriteAllText(path, json);
-        }
-
-        public Employee getEmployeeByName(String name)
-        {
-            deserialize();
-            for (int i = 0; i < employees.Count; i++)
-                if (employees[i].name.Equals(name)) return employees[i];
-            return null;
-        }
-
-        public List<Employee> getEmployees()
-        {
-            deserialize();
+            List<String> employees = new List<String>();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("SELECT * FROM employees ORDER BY name ASC", connection);
+                    command.CommandType = System.Data.CommandType.Text;
+                    using (SqlDataReader oReader = command.ExecuteReader())
+                    {
+                        while (oReader.Read())
+                        {
+                            employees.Add(oReader["name"].ToString());
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (SqlException e)
+            {
+                form.showMessageBox("Er ging iets mis bij het verbinden met de database...");
+                Console.WriteLine(e.StackTrace + ", " + e.Message);
+            }
+            
             return employees;
-        }
-
-        public void removeEmployee(String name)
-        {
-            deserialize();
-            for (int i = 0; i < employees.Count; i++)
-                if (employees[i].name.Equals(name)) employees.RemoveAt(i);
-            serialize();
-        }
-
-        public class CheckVersionResult
-        {
-            public int result { get; set; }
-            public int allowed { get; set; }
-        }
-
-        public class CheckActivationResult
-        {
-            public int result { get; set; }
-            public int sameIP { get; set; }
-            public int activated { get; set; }
-        }
-
-        public class Response
-        {
-            public int result { get; set; }
-        }
-
-        public class List
-        {
-            public String license { get; set; }
-            public String version { get; set; }
-            public List<Employee> employees { get; set; }
-        }
-
-        public class Employee
-        {
-            public string name { get; set; }
-            public List<Result> results { get; set; }
         }
 
         public class Result
@@ -313,6 +185,13 @@ namespace MRT
             public string date { get; set; }
             public bool intime { get; set; }
             public int quality { get; set; }
+
+            public Result(string date, bool intime, int quality)
+            {
+                this.date = date;
+                this.intime = intime;
+                this.quality = quality;
+            }
         }
     }
 }
