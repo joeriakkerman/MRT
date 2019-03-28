@@ -78,3 +78,5 @@ D:\Joeri\workspace\visual studio\MRT\MRT\MRT\obj\Debug\MRT.Form3.resources
 D:\Joeri\workspace\visual studio\MRT\MRT\MRT\obj\Debug\MRT.Form4.resources
 D:\Joeri\workspace\visual studio\MRT\MRT\MRT\obj\Debug\MRT.Properties.Resources.resources
 D:\Joeri\workspace\visual studio\MRT\MRT\MRT\obj\Debug\MRT.csproj.GenerateResource.Cache
+D:\Joeri\workspace\visual studio\MRT\MRT\MRT\bin\Debug\Employees.mdf
+D:\Joeri\workspace\visual studio\MRT\MRT\MRT\bin\Debug\Employees_log.ldf

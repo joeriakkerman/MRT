@@ -283,6 +283,7 @@ namespace MRT
         {
             Form2 f = new Form2(this);
             f.ShowDialog();
+            employeesList_SelectionChangeCommitted(sender, e);
         }
 
         private void Form1_Activated(object sender, EventArgs e)
@@ -298,6 +299,7 @@ namespace MRT
         {
             if (!employeesList.Text.ToString().Equals(""))
                 new Form3(this, employeesList.Text.ToString()).ShowDialog();
+            employeesList_SelectionChangeCommitted(sender, e);
         }
 
         private void left_Click(object sender, EventArgs e)

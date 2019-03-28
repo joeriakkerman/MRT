@@ -103,3 +103,8 @@ D:\Joeri\workspace\visual studio\MRT\MRT\MRT\obj\Release\MRT.Form3.resources
 D:\Joeri\workspace\visual studio\MRT\MRT\MRT\obj\Release\MRT.Form4.resources
 D:\Joeri\workspace\visual studio\MRT\MRT\MRT\obj\Release\MRT.Properties.Resources.resources
 D:\Joeri\workspace\visual studio\MRT\MRT\MRT\obj\Release\MRT.csproj.GenerateResource.Cache
+D:\Joeri\done projects\pc\visual studio\MRT\MRT\MRT\bin\Release\MRT.exe.config
+D:\Joeri\done projects\pc\visual studio\MRT\MRT\MRT\obj\Release\MRT.exe
+D:\Joeri\done projects\pc\visual studio\MRT\MRT\MRT\obj\Release\MRT.pdb
+D:\Joeri\workspace\visual studio\MRT\MRT\MRT\bin\Release\Employees.mdf
+D:\Joeri\workspace\visual studio\MRT\MRT\MRT\bin\Release\Employees_log.ldf

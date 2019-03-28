@@ -39,13 +39,17 @@ namespace MRT
         {
             //addEmployeesFromList();
             Parser parser = new Parser(form);
-            Parser.Employee emp = new Parser.Employee();
-            emp.name = name.Text.ToString();
-            emp.results = new List<Parser.Result>();
-            parser.getEmployees().Add(emp);
-            parser.serialize();
-            Close();
-            form.setAddedEmployee(emp.name);
+            if (parser.getEmployees().Count < 1)
+            {
+                Parser.Employee emp = new Parser.Employee();
+                emp.name = name.Text.ToString();
+                emp.results = new List<Parser.Result>();
+                parser.getEmployees().Add(emp);
+                parser.serialize();
+                Close();
+                form.setAddedEmployee(emp.name);
+            }
+            else MessageBox.Show("Je kunt maximaal 1 medewerker toevoegen in de DEMO versie");
         }
     }
 }

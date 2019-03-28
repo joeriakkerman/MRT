@@ -8,6 +8,8 @@ using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http;
 using System.Collections.Specialized;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace MRT
 {
@@ -22,8 +24,77 @@ namespace MRT
         public Parser(Form1 form)
         {
             this.form = form;
-            client = new HttpClient();
+            //client = new HttpClient();
             deserialize();
+        }
+
+        private void addEmployee()
+        {
+
+        }
+
+        private void removeEmployee()
+        {
+
+        }
+
+        private void addResult(int empID)
+        {
+
+        }
+
+        private int getIdFromName(String name)
+        {
+            return 0;
+        }
+
+        private void updateFromJsonToDB()
+        {
+            String path = "\"D:\\Joeri\\workspace\\visual studio\\MRT\\MRT\\MRT\\Employees.mdf\"";
+            String connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + path + ";Integrated Security=True";//|DataDirectory|\\Employees.mdf
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand("INSERT INTO results (emp_id, date, intime, quality) VALUES((SELECT id FROM employees WHERE name=@name), @date, @intime, @quality)", connection);
+                    command.CommandType = System.Data.CommandType.Text;
+
+                    connection.Open();
+                    Console.WriteLine("Connection opened: " + employees.Count);
+
+                    foreach (Employee e in employees)
+                    {
+                        foreach(Result r in e.results)
+                        {
+                            command.Parameters.Clear();
+                            command.Parameters.AddWithValue("@name", e.name);
+                            command.Parameters.AddWithValue("@date", r.date);
+                            command.Parameters.AddWithValue("@intime", r.intime);
+                            command.Parameters.AddWithValue("@quality", r.quality);
+                            int result = command.ExecuteNonQuery();
+                            Console.WriteLine("Amount of rows affected: " + result + ", tried to add result for: " + e.name + ", date: " + r.date);
+                        }
+                    }
+
+                    command = new SqlCommand("SELECT * FROM employees", connection);
+
+                    using (SqlDataReader oReader = command.ExecuteReader())
+                    {
+                        while (oReader.Read())
+                        {
+                            Console.WriteLine("id: " + oReader["id"].ToString() + ", name: " + oReader["name"].ToString());
+                        }
+                    }
+
+                    connection.Close();
+                    Console.WriteLine("Connection closed");
+                }
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e.StackTrace + ", " + e.Message);
+            }
         }
 
         public Boolean makeBackup()
