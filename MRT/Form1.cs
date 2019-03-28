@@ -16,7 +16,6 @@ namespace MRT
 
         private Parser parser;
         private int week, currentWeek;
-        public String mrtVersion = "1.0";
         private String addedName = "";
         private int year, currentYear;
 

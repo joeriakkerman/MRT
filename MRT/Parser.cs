@@ -20,7 +20,7 @@ namespace MRT
         public Parser(Form1 form)
         {
             this.form = form;
-            path = "\"D:\\Joeri\\workspace\\visual studio\\MRT\\MRT\\MRT\\Employees.mdf\"";
+            path = "\"C:\\Users\\Joeri\\Documents\\workspace\\visual studio\\MRT\\MRT\\Employees.mdf\"";
             connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + path + ";Integrated Security=True";//|DataDirectory|\\Employees.mdf
         }
 
