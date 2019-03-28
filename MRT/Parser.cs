@@ -13,14 +13,13 @@ namespace MRT
     class Parser
     {
         private Form1 form;
-
-        private String path;
+        
         private String connectionString;
 
         public Parser(Form1 form)
         {
             this.form = form;
-            path = "\"C:\\Users\\Joeri\\Documents\\workspace\\visual studio\\MRT\\MRT\\Employees.mdf\"";
+            String path = AppDomain.CurrentDomain.BaseDirectory + "Employees.mdf";
             connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + path + ";Integrated Security=True";//|DataDirectory|\\Employees.mdf
         }
 
