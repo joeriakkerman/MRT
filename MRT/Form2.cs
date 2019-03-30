@@ -38,14 +38,18 @@ namespace MRT
         {
             //addEmployeesFromList();
             Parser parser = new Parser(form);
-            if (!parser.addEmployee(name.Text.ToString()))
+            if (parser.getEmployees().Count < 1)
             {
-                MessageBox.Show("Er ging iets mis bij het toevoegen van een medewerker...");
+                if (!parser.addEmployee(name.Text.ToString()))
+                {
+                    MessageBox.Show("Er ging iets mis bij het toevoegen van een medewerker...");
+                }
+                else
+                {
+                    form.setAddedEmployee(name.Text.ToString());
+                }
             }
-            else
-            {
-                form.setAddedEmployee(name.Text.ToString());
-            }
+            else MessageBox.Show("Bij de demo versie kan je maximaal één medewerker toevoegen...");
             Close();
         }
     }
