@@ -26,7 +26,7 @@ namespace MRT
         private void setup()
         {
             if (!File.Exists(fileName)) SQLiteConnection.CreateFile(fileName);
-            connection = new SQLiteConnection("Data Source=" + fileName + ";Version=3;");
+            connection = new SQLiteConnection("Data Source=" + fileName + ";Version=3;Foreign Keys=True;");
         }
 
         private void createSchema()
@@ -34,7 +34,7 @@ namespace MRT
             connection.Open();
 
             string tbl_emp = "CREATE TABLE IF NOT EXISTS employees (name VARCHAR(50) PRIMARY KEY);";
-            string tbl_res = "CREATE TABLE IF NOT EXISTS results (name VARCHAR(50), date VARCHAR(10), intime TINYINT NOT NULL, quality INT NOT NULL, PRIMARY KEY (name, date), FOREIGN KEY (name) REFERENCES employees(name));";
+            string tbl_res = "CREATE TABLE IF NOT EXISTS results (name VARCHAR(50), date VARCHAR(10), intime TINYINT NOT NULL, quality INT NOT NULL, PRIMARY KEY (name, date), FOREIGN KEY (name) REFERENCES employees(name) ON DELETE CASCADE);";
 
             SQLiteCommand command = new SQLiteCommand(tbl_emp, connection);
             int result = command.ExecuteNonQuery();
