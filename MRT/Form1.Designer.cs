@@ -288,7 +288,7 @@
             this.MinimumSize = new System.Drawing.Size(813, 681);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "MRT";
+            this.Text = "MRT DEMO";
             this.Activated += new System.EventHandler(this.Form1_Activated);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
