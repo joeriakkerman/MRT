@@ -98,16 +98,9 @@ D:\Joeri\done projects\pc\visual studio\MRT\MRT\MRT\obj\Release\MRT.exe
 D:\Joeri\done projects\pc\visual studio\MRT\MRT\MRT\obj\Release\MRT.pdb
 D:\Joeri\workspace\visual studio\MRT\MRT\MRT\bin\Release\Employees.mdf
 D:\Joeri\workspace\visual studio\MRT\MRT\MRT\bin\Release\Employees_log.ldf
-C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\Employees.mdf
-C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\Employees_log.ldf
 C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\MRT.exe.config
 C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\MRT.exe
 C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\MRT.pdb
-C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\System.Net.Http.Extensions.dll
-C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\System.Net.Http.Primitives.dll
-C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\System.Net.Http.Extensions.xml
-C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\System.Net.Http.Primitives.xml
-C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\obj\Release\MRT.csproj.App.config
 C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\obj\Release\MRT.csprojAssemblyReference.cache
 C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\obj\Release\MRT.Form1.resources
 C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\obj\Release\MRT.Form2.resources
@@ -116,3 +109,12 @@ C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\obj\Release\MRT.Propert
 C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\obj\Release\MRT.csproj.CopyComplete
 C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\obj\Release\MRT.exe
 C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\obj\Release\MRT.pdb
+C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\EntityFramework.dll
+C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\EntityFramework.SqlServer.dll
+C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\System.Data.SQLite.dll
+C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\System.Data.SQLite.EF6.dll
+C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\System.Data.SQLite.Linq.dll
+C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\EntityFramework.xml
+C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\EntityFramework.SqlServer.xml
+C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\System.Data.SQLite.xml
+C:\Users\Joeri\Documents\workspace\visual studio\MRT\MRT\bin\Release\System.Data.SQLite.dll.config
