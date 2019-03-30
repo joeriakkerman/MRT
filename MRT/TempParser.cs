@@ -61,11 +61,13 @@ namespace MRT
             Parser parser = new Parser(form);
             foreach(Employee e in list.employees)
             {
-                
-                parser.addEmployee(e.name);
+
+                if (parser.addEmployee(e.name)) Console.WriteLine("Succesfully added " + e.name);
+                else Console.WriteLine("Could not add employee " + e.name);
                 foreach(Result r in e.results)
                 {
-                    parser.addResult(e.name, r.date, r.intime, r.quality);
+                    if (parser.addResult(e.name, r.date, r.intime, r.quality)) Console.WriteLine("Succesfully added result " + e.name + ", " + r.date);
+                    else Console.WriteLine("Could not add result " + e.name + ", " + r.date);
                 }
             }
         }

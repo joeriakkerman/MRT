@@ -23,6 +23,7 @@ namespace MRT
         {
             InitializeComponent();
             parser = new Parser(this);
+            //new TempParser(this);
             init();
         }
 
